@@ -56,7 +56,15 @@ bool Player::build-road(const int EdgeNum){
       }
     }
   }
-  if (canBuild){
+  bool enoughResources = true;
+   if (this->resources[3] < 1 or this->resources[4] < 1){
+    enoughResources = false;
+  }
+  else{
+    this->resources[3] -= 1;
+    this->resources[4] -= 1;
+  }
+  if (canBuild and enoughResources){
     edges.setOwner(this->idNum);
     return true;
   }
@@ -72,7 +80,17 @@ bool Player::build-res(const int VertexNum){
         canBuild = true;
       }
     }
-  if (canBuild){
+  bool enoughResources = true;
+  if (this->resources[0] < 1 or this->resources[1] < 1 or this->resources[2] < 1 or this->resources[4] < 1){
+    enoughResources = false;
+  }
+  else{
+    this->resources[0] -= 1;
+    this->resources[1] -= 1;
+    this->resources[2] -= 1;
+    this->resources[4] -= 1;
+  }
+  if (canBuild and enoughResources){
     vertices.setOwner(this->idNum);
     return true;
   }
@@ -81,20 +99,51 @@ bool Player::build-res(const int VertexNum){
 
 bool Player::improve(const int VertexNum){
   Vertex * vertices = this->pBoard.getEdge(VertexNum);
-  if (vertices.getOwner() == this->idNum){
-    vertices.levelup();
-    return true;
+  enoughResources = true;
+  if (vertices.getOwner() == this->idNum and enoughResources){
+    int levels = vertices.getLevel();
+    if (levels = 0){
+      build-res(vertices.getSideline());
+    }
+    else if (levels = 1){
+      if (this->resources[2] < 2 or this->resources[3] < 3){
+        return false;
+      }
+      else{
+        vertices.levelup();
+        this->resources[2] -= 2;
+        this->resources[3] -= 3;
+        return true;
+      }
+    }
+    else if (levels = 2){
+      if (this->resources[0] < 3 or this->resources[1] < 2 or this->resources[2] < 2 or this->resources[3] < 1 or this->resources[4] < 2){
+        return false;
+      }
+      else{
+        vertices.levelup();
+        this->resources[0] -= 3;     
+        this->resources[1] -= 2;
+        this->resources[2] -= 2;
+        this->resources[3] -= 1;
+        this->resources[4] -= 2;
+        return true;
+      }
+    }
   }
   return false;
 }
 
 bool Player::trade(const char Playernum, const int ResourceFrom, const int ResourceTo){
   Player * players = this->pBoard.getPlayer(Playernum);
-  this.getResources(ResourceFrom, 1);
-  this.getResources(ResourceTo, -1);
-  players.getResources(ResourceTo, 1);
-  players.getResources(ResourceFrom, -1);
-  return true;
+  if (this->resources[ResourceTo] > 0 and players->resources[ResourceFrom] > 0){
+    this.getResources(ResourceFrom, 1);
+    this.getResources(ResourceTo, -1);
+    players.getResources(ResourceTo, 1);
+    players.getResources(ResourceFrom, -1);
+    return true;
+  }
+  return false;
 }
 
 bool Player::getResources(const int Resource, const int number){
