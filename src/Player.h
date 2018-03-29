@@ -21,5 +21,4 @@ Class Player {
   bool improve(const int VertexNum);
   bool trade(const char Playernum, const int ResourceFrom, const int ResourceTo);
 
-  bool getResources(const int Resource);
-  void MutateResource(const int Resource);
+  bool getResources(const int Resource, const int number);
