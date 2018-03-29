@@ -9,6 +9,7 @@ Class Player {
   int * resources;
   int BuildPoints;
   Board * pBoard;
+  Vertex * pResidences;
  Public:
   Player();
   Player(int idNum, char pColor, int * resources, int BuildPoints, Board * pBoard);
