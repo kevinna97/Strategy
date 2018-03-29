@@ -2,6 +2,7 @@
 #include "Resources.h"
 #include <string>
 #include "Edge.h"
+#include "Vertex.h"
 
 using namespace std;
 
